@@ -113,11 +113,12 @@ void displaySensorData() {
 
 void setup() {
   Serial.begin(115200);
-  setupWifi();
   setupDisplay();
+  displaySplash();
+
+  setupWifi();
   setupAtmosphereMonitor();
 
-  displaySplash();
   delay(5000);
   led.off();
 }
