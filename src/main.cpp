@@ -2,7 +2,7 @@
 #include "Credentials.h"
 
 // *** RGB LED
-#include "RGBLed.h"
+#include "Outputs/RGBLed.h"
 RGBLed led(D3, D4, D7);
 
 // *** Soil Monitor
