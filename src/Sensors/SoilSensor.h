@@ -1,12 +1,12 @@
-#ifndef SoilMonitor_h
-#define SoilMonitor_h
+#ifndef SoilSensor_h
+#define SoilSensor_h
 
 #include <Arduino.h>
 
-class SoilMonitor
+class SoilSensor
 {
   public:
-    SoilMonitor(int pin, int wetSoilMoistureCapacitance, int drySoilMoistureCapacitance);
+    SoilSensor(int pin, int wetSoilMoistureCapacitance, int drySoilMoistureCapacitance);
     int moisture();
   private:
     int _pin;

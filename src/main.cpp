@@ -6,19 +6,14 @@
 RGBLed led(D3, D4, D7);
 
 // *** Soil Monitor
-#include "SoilMonitor.h"
+#include "Sensors/SoilSensor.h"
 #define WET_SOIL_MOISTURE_CAPACITANCE 1265
 #define DRY_SOIL_MOISTURE_CAPACITANCE 2970
-SoilMonitor soilMonitor(D6, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
+SoilSensor soilSensor(D6, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
 
 // *** Atmosphere Monitor
-#include <DHT.h>
-#include <DHT_U.h>
-DHT_Unified atmosphereMonitor(D5, DHT22);
-
-void setupAtmosphereMonitor() {
-  atmosphereMonitor.begin();
-}
+#include "Sensors/AtmosphereSensor.h"
+AtmosphereSensor* atmosphereSensor = new AtmosphereSensor(D5);
 
 // ** WiFi
 #include <ESP8266WiFi.h>
@@ -99,16 +94,6 @@ void displayValues(int soilMoisture, float temperature, float humidity) {
   display.display();
 }
 
-void displaySensorData() {
-  sensors_event_t event;
-  atmosphereMonitor.temperature().getEvent(&event);
-  float temperatureValue = event.temperature;
-  atmosphereMonitor.humidity().getEvent(&event);
-  float humidityValue = event.relative_humidity;
-
-  displayValues(soilMonitor.moisture(), temperatureValue, humidityValue);
-}
-
 // *** Lifecycle
 
 void setup() {
@@ -117,13 +102,12 @@ void setup() {
   displaySplash();
 
   setupWifi();
-  setupAtmosphereMonitor();
 
   delay(5000);
   led.off();
 }
 
 void loop() {
-  displaySensorData();
+  displayValues(soilSensor.moisture(), atmosphereSensor->temperature(), atmosphereSensor->humidity());
   delay(5000);
 }
