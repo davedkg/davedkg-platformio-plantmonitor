@@ -4,6 +4,24 @@
 #include "RGBLed.h"
 RGBLed led(D3, D4, D7);
 
+// *** Soil Monitor
+#include "SoilMonitor.h"
+#define SOIL_MOISTURE_PIN D6
+#define WET_SOIL_MOISTURE_CAPACITANCE 1265
+#define DRY_SOIL_MOISTURE_CAPACITANCE 2970
+SoilMonitor soilMonitor(SOIL_MOISTURE_PIN, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
+
+// *** Atmosphere Monitor
+#include <DHT.h>
+#include <DHT_U.h>
+#define DHT22_PIN D5
+#define DHTTYPE DHT22
+DHT_Unified atmosphereMonitor(DHT22_PIN, DHTTYPE);
+
+void setupAtmosphereMonitor() {
+  atmosphereMonitor.begin();
+}
+
 // *** Display
 #include <SPI.h>
 #include <Wire.h>
@@ -31,21 +49,54 @@ void displaySplash() {
   display.setCursor(0, 8);
   display.println("by DaveDKG");
   display.setCursor(0, 16);
-  display.println("v1.01");
+  display.println("v1.0");
   display.display();
+}
+
+void displayValues(int soilMoisture, float temperature, float humidity) {
+  char buffer[32];
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+
+  sprintf(buffer, "Soil Moisture: %d%%", soilMoisture);
+  display.setCursor(0, 0);
+  display.println(buffer);
+
+  sprintf(buffer, "Temp: %0.1f C", temperature);
+  display.setCursor(0, 8);
+  display.println(buffer);
+
+  sprintf(buffer, "Humidity: %0.1f%%", humidity);
+  display.setCursor(0, 16);
+  display.println(buffer);
+
+  display.display();
+}
+
+void displaySensorData() {
+  sensors_event_t event;
+  atmosphereMonitor.temperature().getEvent(&event);
+  float temperatureValue = event.temperature;
+  atmosphereMonitor.humidity().getEvent(&event);
+  float humidityValue = event.relative_humidity;
+
+  displayValues(soilMonitor.moisture(), temperatureValue, humidityValue);
 }
 
 // *** Lifecycle
 
 void setup() {
   Serial.begin(115200);
-  led.off();
   setupDisplay();
+  setupAtmosphereMonitor();
 
   displaySplash();
-  delay(2000);
+  delay(5000);
 }
 
 void loop() {
-
+  displaySensorData();
+  delay(5000);
 }
