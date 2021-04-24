@@ -7,17 +7,14 @@ RGBLed led(D3, D4, D7);
 
 // *** Soil Monitor
 #include "SoilMonitor.h"
-#define SOIL_MOISTURE_PIN D6
 #define WET_SOIL_MOISTURE_CAPACITANCE 1265
 #define DRY_SOIL_MOISTURE_CAPACITANCE 2970
-SoilMonitor soilMonitor(SOIL_MOISTURE_PIN, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
+SoilMonitor soilMonitor(D6, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
 
 // *** Atmosphere Monitor
 #include <DHT.h>
 #include <DHT_U.h>
-#define DHT22_PIN D5
-#define DHTTYPE DHT22
-DHT_Unified atmosphereMonitor(DHT22_PIN, DHTTYPE);
+DHT_Unified atmosphereMonitor(D5, DHT22);
 
 void setupAtmosphereMonitor() {
   atmosphereMonitor.begin();
