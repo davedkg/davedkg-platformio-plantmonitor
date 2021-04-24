@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "Credentials.h"
 
 // *** RGB LED
 #include "RGBLed.h"
@@ -20,6 +21,32 @@ DHT_Unified atmosphereMonitor(DHT22_PIN, DHTTYPE);
 
 void setupAtmosphereMonitor() {
   atmosphereMonitor.begin();
+}
+
+// ** WiFi
+#include <ESP8266WiFi.h>
+#include <WiFiClientSecure.h>
+
+void setupWifi() {
+  led.blue();
+  WiFi.disconnect(true);
+  WiFi.mode(WIFI_STA);
+  WiFi.hostname(WIFI_DEVICE_NAME);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  int counter = 0;
+  while (WL_CONNECTED != WiFi.status()) {
+    delay(500);
+    Serial.print(".");
+    counter++;
+    if (60 < counter) {
+      led.red();
+      Serial.println();
+      Serial.println(F("Failed to connect to Wifi"));
+      delay(5000);
+      ESP.restart();
+    }
+  }
+  led.green();
 }
 
 // *** Display
@@ -89,11 +116,13 @@ void displaySensorData() {
 
 void setup() {
   Serial.begin(115200);
+  setupWifi();
   setupDisplay();
   setupAtmosphereMonitor();
 
   displaySplash();
   delay(5000);
+  led.off();
 }
 
 void loop() {
