@@ -22,7 +22,7 @@ Display::Display()
   }
 }
 
-void Display::splash()
+void Display::splash(bool connecting)
 {
   _display->clearDisplay();
   _display->setTextSize(1);
@@ -33,6 +33,12 @@ void Display::splash()
   _display->println("by DaveDKG");
   _display->setCursor(0, 16);
   _display->println("v1.0");
+  _display->setCursor(0, 24);
+  if (true == connecting) {
+    _display->println("connecting to wifi...");
+  } else {
+    _display->println("connected to wifi");
+  }
   _display->display();
 }
 
