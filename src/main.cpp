@@ -4,6 +4,7 @@
 #include "Outputs/RGBLed.h"
 #include "Sensors/AtmosphereSensor.h"
 #include "Sensors/SoilSensor.h"
+#include "Services/RemoteStorageService.h"
 #include "Services/WifiService.h"
 
 #define RED_LED_PIN D3 // digital
@@ -20,6 +21,7 @@ AtmosphereSensor *atmosphereSensor;
 Display *display;
 RGBLed *led;
 SoilSensor *soilSensor;
+RemoteStorageService *remoteStorageService;
 WifiService *wifiService;
 
 void setup() {
@@ -30,6 +32,7 @@ void setup() {
 
   led = new RGBLed(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
   wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
+  remoteStorageService = new RemoteStorageService(API_KEY, API_DOMAIN, API_SSL, led);
   display->splash(false);
 
   atmosphereSensor = new AtmosphereSensor(ATMOSPHERE_SENSOR_PIN);

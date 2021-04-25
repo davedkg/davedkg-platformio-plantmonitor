@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <WiFiClientSecure.h>
 #include "WifiService.h"
 
+// https://github.com/witnessmenow/arduino-sample-api-request/blob/master/ESP8266/HTTP_GET/HTTP_GET.ino
 WifiService::WifiService(char *hostname, char *ssid, char *password, RGBLed *led) {
   _led = led;
   _led->blue();
