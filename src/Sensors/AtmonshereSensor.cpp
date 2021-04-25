@@ -3,7 +3,7 @@
 #include <DHT_U.h>
 #include "AtmosphereSensor.h"
 
-DHT_Unified* _atmosphereSensor;
+DHT_Unified *_atmosphereSensor;
 
 AtmosphereSensor::AtmosphereSensor(int pin) {
   _atmosphereSensor = new DHT_Unified(pin, DHT22);
