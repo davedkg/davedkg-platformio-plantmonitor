@@ -32,7 +32,7 @@ void setup() {
 
   led = new RGBLed(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
   wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
-  remoteStorageService = new RemoteStorageService(API_KEY, API_DOMAIN, API_SSL, led);
+  remoteStorageService = new RemoteStorageService(API_KEY, API_DOMAIN, led);
   display->splash(false);
 
   atmosphereSensor = new AtmosphereSensor(ATMOSPHERE_SENSOR_PIN);

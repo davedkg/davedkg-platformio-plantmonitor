@@ -5,15 +5,12 @@
 WiFiClientSecure client;
 
 // https://github.com/witnessmenow/arduino-sample-api-request/blob/master/ESP8266/HTTP_GET/HTTP_GET.ino
-RemoteStorageService::RemoteStorageService(char *apiKey, char *domain, bool ssl, RGBLed *led) {
+RemoteStorageService::RemoteStorageService(char *apiKey, char *domain, RGBLed *led) {
   _apiKey = apiKey;
   _domain = domain;
-  _ssl = ssl;
   _led = led;
 
-  if (true == ssl) {
-    client.setInsecure();
-  }
+  client.setInsecure();
 
   if (false == ping()) {
     int counter = 0;
@@ -32,9 +29,7 @@ RemoteStorageService::RemoteStorageService(char *apiKey, char *domain, bool ssl,
 }
 
 bool RemoteStorageService::ping() {
-  char pingUrl[256];
-
-  if (!client.connect(_domain, (_ssl ? 443 : 80))) {
+  if (!client.connect(_domain, 443)) {
     Serial.println(F("Unable to open connection"));
     return false;
   }

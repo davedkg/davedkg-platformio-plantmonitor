@@ -7,7 +7,7 @@
 class RemoteStorageService
 {
   public:
-    RemoteStorageService(char *apiKey, char *domain, bool ssl, RGBLed *led);
+    RemoteStorageService(char *apiKey, char *domain, RGBLed *led);
     bool ping();
   private:
     char *_apiKey;
