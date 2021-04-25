@@ -2,9 +2,9 @@
 #include "Credentials.h"
 #include "Outputs/Display.h"
 #include "Outputs/RGBLed.h"
-#include "Outputs/WebService.h"
 #include "Sensors/AtmosphereSensor.h"
 #include "Sensors/SoilSensor.h"
+#include "Services/WifiService.h"
 
 #define WET_SOIL_MOISTURE_CAPACITANCE 1265
 #define DRY_SOIL_MOISTURE_CAPACITANCE 2970
@@ -13,7 +13,7 @@ AtmosphereSensor *atmosphereSensor;
 Display *display;
 RGBLed *led;
 SoilSensor *soilSensor;
-WebService *webService;
+WifiService *wifiService;
 
 void setup() {
   Serial.begin(115200);
@@ -22,7 +22,7 @@ void setup() {
   display->splash(true);
 
   led = new RGBLed(D3, D4, D7);
-  webService = new WebService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
+  wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
   display->splash(false);
 
   atmosphereSensor = new AtmosphereSensor(D5);
