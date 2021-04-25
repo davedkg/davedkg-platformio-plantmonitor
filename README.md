@@ -36,4 +36,4 @@ char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
 
 You can change the pin numbers in main.cpp
 
-TODO insert visual diagram here
+![](docs/PlantMonitor_bb.png)
