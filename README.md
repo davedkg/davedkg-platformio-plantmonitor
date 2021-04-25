@@ -34,6 +34,4 @@ char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
 
 ### Wiring Diagram
 
-You can change the pin numbers in main.cpp
-
 ![](docs/PlantMonitor_bb.png)
