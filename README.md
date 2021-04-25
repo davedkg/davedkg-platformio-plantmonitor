@@ -1,5 +1,9 @@
 # davedkg-platformio-plantmonitor
 
+## TODOS
+
+- how to calibrate soil moisture sensor wet and dry values
+
 ## Setup
 
 ### Credentials
@@ -28,4 +32,6 @@ char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
 
 ### Wiring Diagram
 
-TODO
+You can change the pin numbers in main.cpp
+
+TODO insert visual diagram here
