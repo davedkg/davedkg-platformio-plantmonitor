@@ -22,23 +22,30 @@ Display::Display()
   }
 }
 
-void Display::splash(bool connecting)
+void Display::splash(bool connecting, bool pinging)
 {
   _display->clearDisplay();
   _display->setTextSize(1);
   _display->setTextColor(SSD1306_WHITE);
   _display->setCursor(0, 0);
-  _display->println("PlantMonitor");
+  _display->println("PlantMonitor v1.0");
   _display->setCursor(0, 8);
   _display->println("by DaveDKG");
   _display->setCursor(0, 16);
-  _display->println("v1.0");
-  _display->setCursor(0, 24);
-  if (true == connecting) {
+
+    if (true == connecting) {
     _display->println("connecting to wifi...");
   } else {
     _display->println("connected to wifi");
   }
+  _display->setCursor(0, 24);
+
+  if (true == pinging) {
+    _display->println("connecting to api...");
+  } else {
+    _display->println("connected to api");
+  }
+
   _display->display();
 }
 

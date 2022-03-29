@@ -37,7 +37,7 @@ bool RemoteStorageService::ping() {
   yield();
 
   client.print(F("GET "));
-  client.print("/api/ping");
+  client.print("/ping");
   client.println(F(" HTTP/1.1"));
   client.print(F("Host: "));
   client.println(_domain);
@@ -50,7 +50,7 @@ bool RemoteStorageService::ping() {
 
   char status[32] = {0};
   client.readBytesUntil('\r', status, sizeof(status));
-  if (0 != strcmp(status, "HTTP/1.1 200 OK")) {
+  if (0 != strcmp(status, "HTTP/1.1 204 No Content")) {
     Serial.print(F("Unexpected response: "));
     Serial.println(status);
     return false;
