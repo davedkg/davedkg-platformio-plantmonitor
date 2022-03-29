@@ -37,19 +37,20 @@ void setup() {
   wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
   display->splash(false, true);
 
-  remoteStorageService = new RemoteStorageService(API_KEY, API_DOMAIN, led);
+  remoteStorageService = new RemoteStorageService(API_DOMAIN, led);
   display->splash(false, false);
 
-  delay(2000); // View Startup state on Outputs
+  delay(5000); // View Startup state on Outputs
   led->off();
 }
 
 void loop() {
-  int soilMoisture = soilSensor->moisture();
-  float atmosphereTemperature = atmosphereSensor->temperature();
-  float atmosphereHumidity = atmosphereSensor->humidity();
+  int moisture = soilSensor->moisture();
+  float temperature = atmosphereSensor->temperature();
+  float humidity = atmosphereSensor->humidity();
 
-  display->update(soilMoisture, atmosphereTemperature, atmosphereHumidity);
+  display->update(moisture, temperature, humidity);
+  remoteStorageService->saveReading("TODO", moisture, temperature, humidity);
 
   delay(5000);
 }

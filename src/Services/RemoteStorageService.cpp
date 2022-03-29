@@ -5,8 +5,7 @@
 WiFiClientSecure client;
 
 // https://github.com/witnessmenow/arduino-sample-api-request/blob/master/ESP8266/HTTP_GET/HTTP_GET.ino
-RemoteStorageService::RemoteStorageService(char *apiKey, char *domain, RGBLed *led) {
-  _apiKey = apiKey;
+RemoteStorageService::RemoteStorageService(char *domain, RGBLed *led) {
   _domain = domain;
   _led = led;
 
@@ -26,6 +25,20 @@ RemoteStorageService::RemoteStorageService(char *apiKey, char *domain, RGBLed *l
       }
     }
   }
+}
+
+bool RemoteStorageService::saveReading(char *apiKey, int moisture, float temperature, float humidity) {
+  char buffer[32];
+
+  Serial.println(F("Save Reading: "));
+  sprintf(buffer, "- Soil Moisture: %d%%", moisture);
+  Serial.println(buffer);
+  sprintf(buffer, "- Temp: %0.1f C", temperature);
+  Serial.println(buffer);
+  sprintf(buffer, "- Humidity: %0.1f%%", humidity);
+  Serial.println(buffer);
+
+  return false;
 }
 
 bool RemoteStorageService::ping() {
