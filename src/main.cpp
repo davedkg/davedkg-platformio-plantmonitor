@@ -34,11 +34,15 @@ void setup() {
   atmosphereSensor = new AtmosphereSensor(ATMOSPHERE_SENSOR_PIN);
   soilSensor = new SoilSensor(SOIL_SENSOR_PIN, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
 
-  wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD, led);
-  display->splash(false, true);
+  led->red();
 
-  remoteStorageService = new RemoteStorageService(API_DOMAIN, led);
+  wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD);
+  display->splash(false, true);
+  led->blue();
+
+  remoteStorageService = new RemoteStorageService(API_DOMAIN);
   display->splash(false, false);
+  led->green();
 
   delay(5000); // View Startup state on Outputs
   led->off();

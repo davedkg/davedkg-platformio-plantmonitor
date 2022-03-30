@@ -5,9 +5,8 @@
 WiFiClientSecure client;
 
 // https://github.com/witnessmenow/arduino-sample-api-request/blob/master/ESP8266/HTTP_GET/HTTP_GET.ino
-RemoteStorageService::RemoteStorageService(char *domain, RGBLed *led) {
+RemoteStorageService::RemoteStorageService(char *domain) {
   _domain = domain;
-  _led = led;
 
   client.setInsecure();
 
@@ -15,10 +14,6 @@ RemoteStorageService::RemoteStorageService(char *domain, RGBLed *led) {
     int counter = 0;
 
     while (true) {
-      led->red();
-      delay(500);
-      led->off();
-      delay(500);
       counter++;
       if (10 == counter) {
         ESP.restart();

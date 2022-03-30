@@ -2,18 +2,16 @@
 #define RemoteStorageService_h
 
 #include <Arduino.h>
-#include "Outputs/RGBLed.h"
 
 class RemoteStorageService
 {
   public:
-    RemoteStorageService(char *domain, RGBLed *led);
+    RemoteStorageService(char *domain);
     bool ping();
     bool saveReading(char *apiKey, int moisture, float temperature, float humidity);
   private:
     char *_domain;
     bool _ssl;
-    RGBLed *_led;
 };
 
 #endif
