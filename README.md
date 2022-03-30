@@ -16,7 +16,6 @@ Create src/Credentials.h with the following code.
 #define CREDENTIALS_H
 
 char API_DOMAIN[] = "<YOUR_API_DOMAIN>";
-char API_KEY[] = "<YOUR_API_KEY>";
 char WIFI_DEVICE_NAME[] = "<DEVICE_NAME>";
 char WIFI_SSID[] = "<YOUR_NETWORK_NAME>";
 char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
@@ -30,6 +29,7 @@ char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
 - DHT22 Digital Temperature and Humidity Sensor
 - EK1940 Capacitive Soil Moisture Sensor
 - SSD1306 128x32 OLED Screen
+- LM393 Rain Drops Sensor
 - RGB Led with 3 x 220 ohm resistors
 - Breadboard and wires
 
