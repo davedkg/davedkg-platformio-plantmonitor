@@ -49,7 +49,7 @@ void Display::splash(bool connecting, bool pinging)
   _display->display();
 }
 
-void Display::update(int soilMoisture, float temperature, float humidity) {
+void Display::update(int soilMoisture, float temperature, float humidity, bool raining) {
   char buffer[32];
 
   _display->clearDisplay();
@@ -66,6 +66,10 @@ void Display::update(int soilMoisture, float temperature, float humidity) {
 
   sprintf(buffer, "Humidity: %0.1f%%", humidity);
   _display->setCursor(0, 16);
+  _display->println(buffer);
+
+  sprintf(buffer, "Raining: %s", (raining ? "yes" : "no"));
+  _display->setCursor(0, 24);
   _display->println(buffer);
 
   _display->display();

@@ -8,7 +8,7 @@ class Display
   public:
     Display();
     void splash(bool connecting, bool pinging);
-    void update(int soilMoisture, float temperature, float humidity);
+    void update(int soilMoisture, float temperature, float humidity, bool raining);
 };
 
 #endif

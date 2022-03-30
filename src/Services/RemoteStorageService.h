@@ -8,7 +8,7 @@ class RemoteStorageService
   public:
     RemoteStorageService(char *domain);
     bool ping();
-    bool saveReading(char *apiKey, int moisture, float temperature, float humidity);
+    bool saveReading(char *apiKey, int moisture, float temperature, float humidity, bool raining);
   private:
     char *_domain;
     bool _ssl;

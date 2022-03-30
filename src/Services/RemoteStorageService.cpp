@@ -22,7 +22,7 @@ RemoteStorageService::RemoteStorageService(char *domain) {
   }
 }
 
-bool RemoteStorageService::saveReading(char *apiKey, int moisture, float temperature, float humidity) {
+bool RemoteStorageService::saveReading(char *apiKey, int moisture, float temperature, float humidity, bool raining) {
   char buffer[32];
 
   Serial.println(F("Save Reading: "));
@@ -31,6 +31,8 @@ bool RemoteStorageService::saveReading(char *apiKey, int moisture, float tempera
   sprintf(buffer, "- Temp: %0.1f C", temperature);
   Serial.println(buffer);
   sprintf(buffer, "- Humidity: %0.1f%%", humidity);
+  Serial.println(buffer);
+  sprintf(buffer, "- Raining: %s", (raining ? "yes" : "no"));
   Serial.println(buffer);
 
   return false;
