@@ -1,82 +1,82 @@
 #include <Arduino.h>
-#include <WiFiClientSecure.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266HTTPClient.h>
 #include "RemoteStorageService.h"
 
-WiFiClientSecure client;
-
-// https://github.com/witnessmenow/arduino-sample-api-request/blob/master/ESP8266/HTTP_GET/HTTP_GET.ino
-RemoteStorageService::RemoteStorageService(char *domain) {
+RemoteStorageService::RemoteStorageService(String domain) {
   _domain = domain;
-
-  client.setInsecure();
-
-  if (false == ping()) {
-    int counter = 0;
-
-    while (true) {
-      counter++;
-      if (10 == counter) {
-        ESP.restart();
-      }
-    }
-  }
 }
 
-bool RemoteStorageService::saveReading(char *apiKey, int moisture, float temperature, float humidity, bool raining) {
-  char buffer[32];
+bool RemoteStorageService::saveReading(String apiKey, int moisture, float temperature, float humidity, bool raining) {
+  Serial.println(F("saving reading to api"));
 
-  Serial.println(F("Save Reading: "));
-  sprintf(buffer, "- Soil Moisture: %d%%", moisture);
-  Serial.println(buffer);
-  sprintf(buffer, "- Temp: %0.1f C", temperature);
-  Serial.println(buffer);
-  sprintf(buffer, "- Humidity: %0.1f%%", humidity);
-  Serial.println(buffer);
-  sprintf(buffer, "- Raining: %s", (raining ? "yes" : "no"));
-  Serial.println(buffer);
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
 
-  return false;
+    String params = "api_key=" + apiKey;
+    params += "&plant_reading[soil_moisture]=" + String(moisture);
+    params += "&plant_reading[humidity]=" + String(humidity);
+    params += "&plant_reading[temperature]=" + String(temperature);
+    params += "&plant_reading[raining]=";
+    if (raining) {
+      params += "true";
+    } else {
+      params += "false";
+    }
+    Serial.println(params);
+
+    http.begin("http://" + _domain + "/plant-readings");
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+    int httpCode = http.POST(params);
+
+    Serial.println("save reading returned code: " + String(httpCode));
+
+    if (204 != httpCode) {
+      String payload = http.getString();
+      Serial.println(payload);
+      http.end();
+
+      return false;
+    }
+
+    http.end();
+  } else {
+    Serial.println(F("unable to save reading to api because not connected to wifi!"));
+
+    return false;
+  }
+
+  Serial.println(F("saved reading to api"));
+
+  return true;
 }
 
 bool RemoteStorageService::ping() {
-  if (!client.connect(_domain, 443)) {
-    Serial.println(F("Unable to open connection"));
+  Serial.println(F("pinging api"));
+
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+
+    http.begin("http://" + _domain + "/ping");
+    int httpCode = http.GET();
+
+    Serial.println("ping returned code: " + String(httpCode));
+
+    if (204 != httpCode) {
+      String payload = http.getString();
+      Serial.println(payload);
+      http.end();
+
+      return false;
+    }
+
+    http.end();
+    Serial.println(F("pinged api"));
+
+    return true;
+  } else {
+    Serial.println(F("unable to ping api because not connected to wifi!"));
+
     return false;
   }
-
-  yield();
-
-  client.print(F("GET "));
-  client.print("/ping");
-  client.println(F(" HTTP/1.1"));
-  client.print(F("Host: "));
-  client.println(_domain);
-  client.println(F("Cache-Control: no-cache"));
-
-  if (0 == client.println()) {
-    Serial.println(F("Failed to send request"));
-    return false;
-  }
-
-  char status[32] = {0};
-  client.readBytesUntil('\r', status, sizeof(status));
-  if (0 != strcmp(status, "HTTP/1.1 204 No Content")) {
-    Serial.print(F("Unexpected response: "));
-    Serial.println(status);
-    return false;
-  }
-
-  char endOfHeaders[] = "\r\n\r\n";
-  if (!client.find(endOfHeaders)) {
-    Serial.println(F("Invalid response"));
-    return false;
-  }
-
-  while (client.available()) {
-    char c = 0;
-    client.readBytes(&c, 1);
-    Serial.print(c);
-  }
-
-  return true;
 }

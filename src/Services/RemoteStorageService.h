@@ -6,12 +6,11 @@
 class RemoteStorageService
 {
   public:
-    RemoteStorageService(char *domain);
+    RemoteStorageService(String domain);
     bool ping();
-    bool saveReading(char *apiKey, int moisture, float temperature, float humidity, bool raining);
+    bool saveReading(String apiKey, int moisture, float temperature, float humidity, bool raining);
   private:
-    char *_domain;
-    bool _ssl;
+    String _domain;
 };
 
 #endif

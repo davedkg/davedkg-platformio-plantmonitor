@@ -16,6 +16,7 @@ Create src/Credentials.h with the following code.
 #define CREDENTIALS_H
 
 char API_DOMAIN[] = "<YOUR_API_DOMAIN>";
+char YOUR_API_KEY[] = "<YOUR_API_KEY>";
 char WIFI_DEVICE_NAME[] = "<DEVICE_NAME>";
 char WIFI_SSID[] = "<YOUR_NETWORK_NAME>";
 char WIFI_PASSWORD[] = "<YOUR_NETWORK_PASSWORD>";
