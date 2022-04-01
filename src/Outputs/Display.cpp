@@ -6,7 +6,7 @@
 #include "Display.h"
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define SCREEN_HEIGHT 64 // OLED display height, in pixels
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
@@ -20,57 +20,132 @@ Display::Display()
     Serial.println("SSD1306 allocation failed");
     for(;;); // Don't proceed, loop forever
   }
+
+  _line1 = centerText("Plant Monitor");
+  _line2 = "---------------------";
+
+  drawSplash(unknown, unknown);
 }
 
-void Display::splash(bool connecting, bool pinging)
+void Display::drawSplash(connectionState wifiConnectionState, connectionState apiConnectionState)
 {
-  _display->clearDisplay();
-  _display->setTextSize(1);
-  _display->setTextColor(SSD1306_WHITE);
-  _display->setCursor(0, 0);
-  _display->println("PlantMonitor v1.0");
-  _display->setCursor(0, 8);
-  _display->println("by DaveDKG");
-  _display->setCursor(0, 16);
-
-    if (true == connecting) {
-    _display->println("connecting to wifi...");
-  } else {
-    _display->println("connected to wifi");
-  }
-  _display->setCursor(0, 24);
-
-  if (true == pinging) {
-    _display->println("connecting to api...");
-  } else {
-    _display->println("connected to api");
+  switch (wifiConnectionState) {
+    case connecting:
+      _line3 = centerText("wifi: ...");
+      break;
+    case connected:
+      _line3 = centerText("wifi: success");
+      break;
+      case failed:
+      _line3 = centerText("wifi: failed!");
+      break;
+    default:
+      _line3 = centerText("wifi: ?");
+      break;
   }
 
-  _display->display();
+  switch (apiConnectionState) {
+    case connecting:
+      _line4 = centerText("api: ...");
+      break;
+    case connected:
+      _line4 = centerText("api: success");
+      break;
+      case failed:
+      _line4 = centerText("api: failed!");
+      break;
+    default:
+      _line4 = centerText("api: ?");
+      break;
+  }
+
+  _line5 = "";
+  _line6 = "";
+  _line7 = "";
+  _line8 = centerText("by: davedkg");
+
+  draw();
 }
 
-void Display::update(int soilMoisture, float temperature, float humidity, bool raining) {
-  char buffer[32];
+void Display::drawReadings(float atmosphereTemperature, float atmosphereHumidity, float soilMoisture1, float soilMoisture2, float lightIntensity, bool raining) {
+  _line3 = justifyText("Temperature:", String(atmosphereTemperature) + "C");
+  _line4 = justifyText("Humidity: ", String(atmosphereHumidity) + "%");
+  _line5 = justifyText("Light: ", String(lightIntensity) + "%");
+  _line6 = justifyText("Raining: ",  String(raining ? "yes" : "no"));
+  _line7 = justifyText("Soil 1: ", String(soilMoisture1) + "%");
+  _line8 = justifyText("Soil 2: ", String(soilMoisture2) + "%");
 
+  draw();
+}
+
+// *** Private
+
+String Display::justifyText(String leftText, String rightText) {
+  String spaces = "";
+  int numSpaces = 21 - (leftText.length() + rightText.length());
+
+  for (int i = 0; i < numSpaces; i++) {
+    spaces += " ";
+  }
+
+  return leftText + spaces + rightText;
+}
+
+String Display::centerText(String text) {
+  String spaces = "";
+  int numSpaces = (21 - text.length()) / 2;
+
+  for (int i = 0; i < numSpaces; i++) {
+    spaces += " ";
+  }
+
+  return spaces + text;
+}
+
+void Display::draw() {
   _display->clearDisplay();
   _display->setTextSize(1);
   _display->setTextColor(SSD1306_WHITE);
 
-  sprintf(buffer, "Soil Moisture: %d%%", soilMoisture);
-  _display->setCursor(0, 0);
-  _display->println(buffer);
+  if (!_line1.isEmpty()) {
+    _display->setCursor(0, 0);
+    _display->println(_line1);
+  }
 
-  sprintf(buffer, "Temp: %0.1f C", temperature);
-  _display->setCursor(0, 8);
-  _display->println(buffer);
+  if (!_line2.isEmpty()) {
+    _display->setCursor(0, 8);
+    _display->println(_line2);
+  }
 
-  sprintf(buffer, "Humidity: %0.1f%%", humidity);
-  _display->setCursor(0, 16);
-  _display->println(buffer);
+  if (!_line3.isEmpty()) {
+    _display->setCursor(0, 16);
+    _display->println(_line3);
+  }
 
-  sprintf(buffer, "Raining: %s", (raining ? "yes" : "no"));
-  _display->setCursor(0, 24);
-  _display->println(buffer);
+  if (!_line4.isEmpty()) {
+    _display->setCursor(0, 24);
+    _display->println(_line4);
+  }
+
+  if (!_line5.isEmpty()) {
+    _display->setCursor(0, 32);
+    _display->println(_line5);
+  }
+
+  if (!_line6.isEmpty()) {
+    _display->setCursor(0, 40);
+    _display->println(_line6);
+  }
+
+  if (!_line7.isEmpty()) {
+    _display->setCursor(0, 48);
+    _display->println(_line7);
+  }
+
+  if (!_line8.isEmpty()) {
+    _display->setCursor(0, 56);
+    _display->println(_line8);
+  }
 
   _display->display();
 }

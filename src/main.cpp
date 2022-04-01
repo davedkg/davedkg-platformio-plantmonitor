@@ -1,75 +1,65 @@
 #include <Arduino.h>
+
 #include "Credentials.h"
 #include "Outputs/Display.h"
-#include "Outputs/RGBLed.h"
 #include "Sensors/AtmosphereSensor.h"
-#include "Sensors/SoilSensor.h"
-#include "Sensors/RaindropSensor.h"
 #include "Services/RemoteStorageService.h"
 #include "Services/WifiService.h"
 
-#define RED_LED_PIN D3 // digital
-#define GREEN_LED_PIN D4 // digital
-#define BLUE_LED_PIN D7 // digital
-#define ATMOSPHERE_SENSOR_PIN D5 // analog
-#define SOIL_SENSOR_PIN D6 // analog
-#define RAINDROP_SENSOR_PIN A0 // analog
-
-// calibrate you soil sensor when its dry and submerged in water
-#define WET_SOIL_MOISTURE_CAPACITANCE 1265
-#define DRY_SOIL_MOISTURE_CAPACITANCE 2970
+#define THREE_SECONDS 3000
+#define FIVE_SECONDS 5000
+#define ATMOSPHERE_SENSOR_PIN D5
 
 AtmosphereSensor *atmosphereSensor;
 Display *display;
-RGBLed *led;
-SoilSensor *soilSensor;
-RaindropSensor *raindropSensor;
 RemoteStorageService *remoteStorageService;
 WifiService *wifiService;
+
+float atmosphereTemperature = 0.0;
+float atmosphereHumidity = 0.0;
+float soilMoisture1 = 0.0;
+float soilMoisture2 = 0.0;
+float lightIntensity = 0.0;
+bool raining = false;
 
 void setup() {
   Serial.begin(115200);
 
   display = new Display();
-  led = new RGBLed(RED_LED_PIN, GREEN_LED_PIN, BLUE_LED_PIN);
   atmosphereSensor = new AtmosphereSensor(ATMOSPHERE_SENSOR_PIN);
-  soilSensor = new SoilSensor(SOIL_SENSOR_PIN, WET_SOIL_MOISTURE_CAPACITANCE, DRY_SOIL_MOISTURE_CAPACITANCE);
-  raindropSensor = new RaindropSensor(RAINDROP_SENSOR_PIN);
 
-  // Connect to WiFi
-  display->splash(true, true);
-  led->red();
+  display->drawSplash(connecting, unknown);
   wifiService = new WifiService(WIFI_DEVICE_NAME, WIFI_SSID, WIFI_PASSWORD);
   if (false == wifiService->connect()) {
+    display->drawSplash(failed, unknown);
+    delay(FIVE_SECONDS);
     ESP.restart();
   }
 
-  // Ping API
-  display->splash(false, true);
-  led->blue();
+  display->drawSplash(connected, connecting);
   remoteStorageService = new RemoteStorageService(API_DOMAIN);
   if (false == remoteStorageService->ping()) {
+    display->drawSplash(connected, failed);
+    delay(FIVE_SECONDS);
     ESP.restart();
   }
 
-  // Successful tests on WiFi and API
-  display->splash(false, false);
-  led->green();
-  delay(5000); // delay to view startup states on outputs
-  led->off();
+  display->drawSplash(connected, connected);
+  delay(THREE_SECONDS);
+}
+
+void updateReadings() {
+  atmosphereTemperature = atmosphereSensor->temperature();
+  atmosphereHumidity = atmosphereSensor->humidity();
+  soilMoisture1 = 0.0;
+  soilMoisture2 = 0.0;
+  lightIntensity = 0.0;
+  raining = false;
 }
 
 void loop() {
-  wifiService->connect();
-
-  int moisture = soilSensor->moisture();
-  float temperature = atmosphereSensor->temperature();
-  float humidity = atmosphereSensor->humidity();
-  bool raining = raindropSensor->raining();
-
-  display->update(moisture, temperature, humidity, raining);
-  remoteStorageService->saveReading(API_KEY, moisture, temperature, humidity, raining);
-
-  wifiService->disconnect();
+  updateReadings();
+  display->drawReadings(atmosphereTemperature, atmosphereHumidity, soilMoisture1, soilMoisture2, lightIntensity, raining);
+  // TODO save readings every 15 minutes
   delay(5000);
 }
