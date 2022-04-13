@@ -9,7 +9,7 @@ class RemoteStorageService
     RemoteStorageService(String domain);
     bool ping();
     // FIXME standardize variable names
-    bool saveReading(String apiKey, int moisture, float temperature, float humidity, bool raining, float lightIntensity);
+    bool saveReading(String apiKey, float moisture, float temperature, float humidity, bool raining, float lightIntensity);
   private:
     String _domain;
 };

@@ -63,7 +63,8 @@ void updateReadings() {
   bool raining = (float)adc0 < RAIN_SENSOR_THRESHOLD;
 
   display->drawReadings(atmosphereTemperature, atmosphereHumidity, soilMoisture1, soilMoisture2, lightIntensity, raining);
-  // TODO save readings every 15 minutes
+  remoteStorageService->saveReading(PLANT_1_API_KEY, soilMoisture1, atmosphereTemperature, atmosphereHumidity, raining, lightIntensity);
+  remoteStorageService->saveReading(PLANT_2_API_KEY, soilMoisture2, atmosphereTemperature, atmosphereHumidity, raining, lightIntensity);
 
   delay(FIVE_SECONDS);
 }
