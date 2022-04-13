@@ -67,13 +67,24 @@ void Display::drawSplash(connectionState wifiConnectionState, connectionState ap
   draw();
 }
 
+void Display::drawCalibrations(int16_t lightSensor, int16_t rainSensor, int16_t soilSensor1, int16_t soilSensor2) {
+  _line3 = "";
+  _line4 = "";
+  _line5 = justifyText("Light:", String(lightSensor));
+  _line6 = justifyText("Raining:", String(rainSensor));
+  _line7 = justifyText("Soil 1:", String(soilSensor1));
+  _line8 = justifyText("Soil 2:", String(soilSensor2));
+
+  draw();
+}
+
 void Display::drawReadings(float atmosphereTemperature, float atmosphereHumidity, float soilMoisture1, float soilMoisture2, float lightIntensity, bool raining) {
   _line3 = justifyText("Temperature:", String(atmosphereTemperature) + "C");
-  _line4 = justifyText("Humidity: ", String(atmosphereHumidity) + "%");
-  _line5 = justifyText("Light: ", String(lightIntensity) + "%");
-  _line6 = justifyText("Raining: ",  String(raining ? "yes" : "no"));
-  _line7 = justifyText("Soil 1: ", String(soilMoisture1) + "%");
-  _line8 = justifyText("Soil 2: ", String(soilMoisture2) + "%");
+  _line4 = justifyText("Humidity:", String(atmosphereHumidity) + "%");
+  _line5 = justifyText("Light:", String(lightIntensity) + "%");
+  _line6 = justifyText("Raining:",  String(raining ? "yes" : "no"));
+  _line7 = justifyText("Soil 1:", String(soilMoisture1) + "%");
+  _line8 = justifyText("Soil 2:", String(soilMoisture2) + "%");
 
   draw();
 }

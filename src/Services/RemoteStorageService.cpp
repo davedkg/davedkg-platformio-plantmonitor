@@ -7,7 +7,7 @@ RemoteStorageService::RemoteStorageService(String domain) {
   _domain = domain;
 }
 
-bool RemoteStorageService::saveReading(String apiKey, int moisture, float temperature, float humidity, bool raining) {
+bool RemoteStorageService::saveReading(String apiKey, int moisture, float temperature, float humidity, bool raining, float lightIntensity) {
   Serial.println(F("saving reading to api"));
 
   if (WiFi.status() == WL_CONNECTED) {
@@ -17,6 +17,7 @@ bool RemoteStorageService::saveReading(String apiKey, int moisture, float temper
     params += "&plant_reading[soil_moisture]=" + String(moisture);
     params += "&plant_reading[humidity]=" + String(humidity);
     params += "&plant_reading[temperature]=" + String(temperature);
+    params += "&plant_reading[light_intensity]=" + String(lightIntensity);
     params += "&plant_reading[raining]=";
     if (raining) {
       params += "true";
