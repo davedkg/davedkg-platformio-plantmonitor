@@ -9,8 +9,10 @@
 #include "Services/WifiService.h"
 
 #define ONE_SECOND 1000
-#define THREE_SECONDS 3000
-#define FIVE_SECONDS 5000
+#define THREE_SECONDS (ONE_SECOND * 3)
+#define FIVE_SECONDS (ONE_SECOND * 5)
+#define ONE_MINUTE (ONE_SECOND * 60)
+#define FIFTEEN_MINUTES (ONE_MINUTE * 15)
 #define ATMOSPHERE_SENSOR_PIN D7
 
 int16_t MAX_ANALOG_THRESHOLD = 2047.0;
@@ -50,6 +52,8 @@ void setup() {
 }
 
 void updateReadings() {
+  wifiService->connect();
+
   int16_t adc0 = ads1015.readADC_SingleEnded(0); // Rain Sensor
   int16_t adc1 = ads1015.readADC_SingleEnded(1); // Light Sensor
   int16_t adc2 = ads1015.readADC_SingleEnded(2); // Soil Sensor 1
@@ -66,7 +70,10 @@ void updateReadings() {
   remoteStorageService->saveReading(PLANT_1_API_KEY, soilMoisture1, atmosphereTemperature, atmosphereHumidity, raining, lightIntensity);
   remoteStorageService->saveReading(PLANT_2_API_KEY, soilMoisture2, atmosphereTemperature, atmosphereHumidity, raining, lightIntensity);
 
-  delay(FIVE_SECONDS);
+  wifiService->disconnect();
+
+  // delay(FIVE_SECONDS);
+  delay(FIFTEEN_MINUTES);
 }
 
 void calebrateSensors() {
