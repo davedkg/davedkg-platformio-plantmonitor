@@ -14,6 +14,7 @@ class Display
 {
   public:
     Display();
+    void turnOff();
     void drawSplash(connectionState wifiConnectionState, connectionState apiConnectionState);
     void drawCalibrations(int16_t lightSensor, int16_t rainSensor, int16_t soilSensor1, int16_t soilSensor2);
     void drawReadings(float atmosphereTemperature, float atmosphereHumidity, float soilMoisture1, float soilMoisture2, float lightIntensity, bool raining);

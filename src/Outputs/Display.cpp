@@ -27,6 +27,10 @@ Display::Display()
   drawSplash(unknown, unknown);
 }
 
+void Display::turnOff() {
+  _display->ssd1306_command(SSD1306_DISPLAYOFF);
+}
+
 void Display::drawSplash(connectionState wifiConnectionState, connectionState apiConnectionState)
 {
   switch (wifiConnectionState) {
@@ -158,5 +162,6 @@ void Display::draw() {
     _display->println(_line8);
   }
 
+  _display->ssd1306_command(SSD1306_DISPLAYON);
   _display->display();
 }
