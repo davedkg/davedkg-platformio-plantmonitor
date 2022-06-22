@@ -119,7 +119,7 @@ void loop() {
       display->turnOff();
     }
 
-    if (0 == saveReadingsCountdownSeconds) {
+    if (0 >= saveReadingsCountdownSeconds) {
       saveReadings();
       saveReadingsCountdownSeconds = SAVE_READINGS_COUNTDOWN_SECONDS;
     } else {
