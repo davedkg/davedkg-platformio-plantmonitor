@@ -3,12 +3,13 @@
 #include <ESP8266HTTPClient.h>
 #include "RemoteStorageService.h"
 
-RemoteStorageService::RemoteStorageService(String domain) {
+RemoteStorageService::RemoteStorageService(String domain, Logger *logger) {
   _domain = domain;
+  _logger = logger;
 }
 
 bool RemoteStorageService::saveReading(String apiKey, float moisture, float temperature, float humidity, bool raining, float lightIntensity) {
-  Serial.println(F("saving reading to api"));
+  _logger->println(F("saving reading to api"));
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
@@ -24,17 +25,17 @@ bool RemoteStorageService::saveReading(String apiKey, float moisture, float temp
     } else {
       params += "false";
     }
-    Serial.println(params);
+    _logger->println(params);
 
     http.begin("http://" + _domain + "/plant-readings");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     int httpCode = http.POST(params);
 
-    Serial.println("save reading returned code: " + String(httpCode));
+    _logger->println("save reading returned code: " + String(httpCode));
 
     if (204 != httpCode) {
       String payload = http.getString();
-      Serial.println(payload);
+      _logger->println(payload);
       http.end();
 
       return false;
@@ -42,18 +43,18 @@ bool RemoteStorageService::saveReading(String apiKey, float moisture, float temp
 
     http.end();
   } else {
-    Serial.println(F("unable to save reading to api because not connected to wifi!"));
+    _logger->println(F("unable to save reading to api because not connected to wifi!"));
 
     return false;
   }
 
-  Serial.println(F("saved reading to api"));
+  _logger->println(F("saved reading to api"));
 
   return true;
 }
 
 bool RemoteStorageService::ping() {
-  Serial.println(F("pinging api"));
+  _logger->println(F("pinging api"));
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
@@ -61,22 +62,22 @@ bool RemoteStorageService::ping() {
     http.begin("http://" + _domain + "/ping");
     int httpCode = http.GET();
 
-    Serial.println("ping returned code: " + String(httpCode));
+    _logger->println("ping returned code: " + String(httpCode));
 
     if (204 != httpCode) {
       String payload = http.getString();
-      Serial.println(payload);
+      _logger->println(payload);
       http.end();
 
       return false;
     }
 
     http.end();
-    Serial.println(F("pinged api"));
+    _logger->println(F("pinged api"));
 
     return true;
   } else {
-    Serial.println(F("unable to ping api because not connected to wifi!"));
+    _logger->println(F("unable to ping api because not connected to wifi!"));
 
     return false;
   }
